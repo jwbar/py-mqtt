@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Grow Hub</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f1f1f1;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+        }
+        h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+        .ascii-art {
+            font-size: 12px;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .details {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        .humidity-status, .soil-status, .light-status {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+        .light-off {
+            border: 2px solid black;
+        }
+        .light-on {
+            background-color: yellow;
+        }
+    </style>
+    <script>
+        async function fetchMessages() {
+            const response = await fetch('/messages');
+            const data = await response.json();
+
+            const container = document.getElementById('messages');
+            container.innerHTML = ''; // Clear existing content
+
+            for (const topic in data) {
+                const topicDiv = document.createElement('div');
+                topicDiv.innerHTML = `<h3>${topic}</h3>`;
+                
+                const messageList = document.createElement('ul');
+                data[topic].forEach(message => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `Message: <strong>${message.payload}</strong><br>
+                                          Client ID: <strong>${message.client_id}</strong><br>
+                                          Timestamp: <strong>${new Date(message.timestamp).toLocaleString()}</strong>`;
+                    messageList.appendChild(listItem);
+                });
+                
+                topicDiv.appendChild(messageList);
+                container.appendChild(topicDiv);
+            }
+        }
+
+        setInterval(fetchMessages, 2000); // Fetch messages every 2 seconds
+    </script>
+</head>
+<body>
+    <h2>Welcome to the Grow Hub</h2>
+    <div class="ascii-art">
+        <pre>
+    \    o ^ o    /
+            \ (     ) /
+ ____________(%%%%%%%)____________
+(     /   /  )%%%%%%%(  \   \     )
+(___/___/__/           \__\___\___)
+   (     /  /(%%%%%%%)\  \     )
+    (__/___/ (%%%%%%%) \___\__)
+            /(       )\
+          /   (%%%%%)   \
+               (%%%)
+                 !
+        </pre>
+    </div>
+    <div class="details">
+        Below is the live feed of MQTT messages grouped by topics.
+    </div>
+    <div id="messages"></div>
+</body>
+</html>

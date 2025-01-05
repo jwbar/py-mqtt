@@ -1,0 +1,12 @@
+Unit]
+Description=Gunicorn instance to serve growhub
+After=network.target
+
+[Service]
+User=jay
+Group=www-data
+WorkingDirectory=/home/jay/py-mqtt
+ExecStart=/home/jay/.local/bin/gunicorn --chdir /home/jay/py-mqtt --workers 4 --bind 0.0.0.0:5004 py-mqtt:app
+
+[Install]
+WantedBy=multi-user.target
